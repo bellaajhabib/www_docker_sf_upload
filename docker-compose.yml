@@ -1,0 +1,58 @@
+version: "3.8"
+services:
+
+    db:
+        image: mysql
+        container_name: db_docker_upload
+        restart: always
+        volumes:
+            - db-data:/var/lib/mysql
+        environment:
+            MYSQL_ALLOW_EMPTY_PASSWORD: 'yes'
+        networks:
+            - dev
+
+    phpmyadmin:
+        image: phpmyadmin
+        container_name: phpmyadmin_docker_upload
+        restart: always
+        depends_on:
+            - db
+        ports:
+            - "8222:80"
+        environment:
+            PMA_HOST: db
+        networks:
+            - dev
+
+    maildev:
+        image: maildev/maildev
+        container_name: maildev_docker_upload
+        command: bin/maildev --web 80 --smtp 25 --hide-extensions STARTTLS
+        ports:
+          - "8021:80"
+        restart: always
+        networks:
+            - dev
+
+    www:
+        build: ./php
+        container_name: www_docker_upload
+        ports:
+          - "8720:80"
+        volumes:
+            - ./php/vhosts:/etc/apache2/sites-enabled
+            - ./:/var/www
+        restart: always
+        networks:
+            - dev
+        extra_hosts:
+            - host.docker.internal:host-gateway
+
+networks:
+    dev:
+
+volumes:
+    db-data:
+
+###< doctrine/doctrine-bundle ###

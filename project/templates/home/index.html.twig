@@ -1,0 +1,10 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello HomeController!{% endblock %}
+
+{% block body %}
+  {{ form_start(form) }}
+  {{ form_rest(form) }}
+  <button>Envoyer</button>
+  {{ form_end(form) }}
+{% endblock %}
